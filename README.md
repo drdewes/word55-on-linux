@@ -3,6 +3,8 @@
 *Das echte MS Word 5.5 für DOS aus dem Jahr 1991 — gestochen scharf, mit
 Umlauten, und so eingerichtet, dass es sauber speichert. Auf modernem Linux.*
 
+![Microsoft Word 5.5 läuft unter Linux in DOSBox-X](docs/screenshot.png)
+
 > **English (short):** Run the real **MS Word 5.5 for DOS** on modern Linux via
 > DOSBox-X — sharp TrueType text, working German keyboard, and (the tricky part)
 > **reliable saving**. This repo contains the configuration, three helper scripts
