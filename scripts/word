@@ -1,0 +1,3 @@
+#!/bin/sh
+# Startet Microsoft Word 5.5 (DOS, deutsch) in DOSBox-X
+exec dosbox-x -conf "$HOME/.local/share/word55/dosbox-x-word55.conf" "$@"

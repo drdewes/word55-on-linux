@@ -1,0 +1,26 @@
+# Niemals mit hochladen: Word-Programmdateien + gebautes Festplatten-Image
+# (Microsoft-Copyright bzw. lokal erzeugt)
+*.img
+*.IMG
+
+# Word-5.5-Programmdateien, falls jemand sie versehentlich hier ablegt
+WORD/
+word/
+*.EXE
+*.exe
+*.OVR
+*.ovr
+*.HLP
+*.hlp
+*.LEX
+*.lex
+
+# Schriftarten (bei Bedarf lokal, nicht Teil des Repos)
+fonts/
+*.ttf
+*.TTF
+
+# Uebliches
+*.pdf
+*.bak
+.DS_Store

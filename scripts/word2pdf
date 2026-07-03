@@ -1,0 +1,98 @@
+#!/bin/sh
+# word2pdf — RTF (oder TXT) aus Word 5.5 nach PDF wandeln, via LibreOffice.
+# Word 5.5 speichert im alten Binaerformat, das kein Linux-Tool liest. Loesung:
+# in Word beim Speichern Format "RTF" waehlen (behaelt Fett/Kursiv) -> diese Datei
+# hier durchjagen. RTF aus Word ist \pca (CP437), LibreOffice liest das korrekt.
+#
+#   word2pdf                interaktiv (fzf): RTF/TXT aus dem Word-Image waehlen -> PDF
+#   word2pdf DATEI.RTF      Datei wandeln. DATEI ist entweder ein echter Pfad ODER
+#                           ein Dateiname in C:\DOKUMENT im Word-Image.
+#   word2pdf all            alle RTF/TXT aus dem Image wandeln
+#
+# PDFs landen in $DEST (in der Dropbox -> synchronisiert):
+DEST="${WORD_DOCS_DIR:-$HOME/Dokumente/word55}"
+IMG="$HOME/.local/share/word55/word55hd.img@@63S"
+DDIR="::/DOKUMENT"
+PROFILE="/tmp/lo-word2pdf-profile"
+
+for bin in libreoffice mcopy; do
+	command -v "$bin" >/dev/null 2>&1 || { echo "Fehler: $bin nicht installiert." >&2; exit 1; }
+done
+
+# Namen (RTF/TXT) aus dem Image auflisten
+img_docs() {
+	mdir -/ -b -i "$IMG" "$DDIR" 2>/dev/null | tr -d '\r' \
+		| sed -e 's#.*/##' | grep -iE '\.(rtf|txt)$'
+}
+
+to_pdf() {
+	# $1 = lokaler Pfad einer RTF/TXT-Datei
+	src="$1"
+	# Word-5.5-Binaerformat (haeufig faelschlich als .TXT gespeichert) kann
+	# LibreOffice NICHT lesen -> sauber ueberspringen statt kryptischem Fehler.
+	case "$(file -b "$src" 2>/dev/null)" in
+	*"Microsoft Word"*|*"Composite Document"*)
+		echo "  uebersprungen: $(basename "$src") ist Word-Binaerformat (nicht lesbar)." >&2
+		echo "     -> in Word die Datei als RTF neu speichern, dann geht's." >&2
+		return 1 ;;
+	esac
+	mkdir -p "$DEST"
+	if libreoffice --headless -env:UserInstallation="file://$PROFILE" \
+		--convert-to pdf --outdir "$DEST" "$src" >/dev/null 2>&1; then
+		base=$(basename "$src"); stem=${base%.*}
+		echo "  PDF: $DEST/$stem.pdf"
+	else
+		echo "  FEHLER bei der Konvertierung von $src" >&2
+		return 1
+	fi
+}
+
+# Quelle aufloesen und wandeln. $1 = Pfad ODER Image-Dateiname.
+resolve_and_convert() {
+	arg="$1"
+	if [ -f "$arg" ]; then
+		to_pdf "$arg"; return $?
+	fi
+	# sonst: als Image-Doku behandeln (Endung .RTF ergaenzen falls keine da)
+	name="$arg"
+	case "$name" in *.*) : ;; *) name="$name.RTF" ;; esac
+	tmp=$(mktemp -d /tmp/word2pdf.XXXXXX)
+	if mcopy -m -n -i "$IMG" "$DDIR/$name" "$tmp/" 2>/dev/null; then
+		to_pdf "$tmp/$name"; rc=$?
+		rm -rf "$tmp"; return $rc
+	fi
+	rm -rf "$tmp"
+	echo "  nicht gefunden (weder lokal noch in C:\\DOKUMENT): $arg" >&2
+	return 1
+}
+
+case "$1" in
+all)
+	docs=$(img_docs)
+	[ -z "$docs" ] && { echo "Keine RTF/TXT in C:\\DOKUMENT."; exit 0; }
+	printf '%s\n' "$docs" | while IFS= read -r f; do resolve_and_convert "$f"; done
+	echo "Fertig. Ziel: $DEST"
+	;;
+""|pick)
+	if ! command -v fzf >/dev/null 2>&1; then
+		echo "fzf fehlt. Nutze: word2pdf DATEI.RTF  oder  word2pdf all" >&2
+		echo "Vorhanden im Image:"; img_docs
+		exit 0
+	fi
+	docs=$(img_docs)
+	[ -z "$docs" ] && { echo "Keine RTF/TXT in C:\\DOKUMENT zum Wandeln."; exit 0; }
+	sel=$(printf '%s\n' "$docs" | fzf --multi \
+		--prompt="Word-Datei -> PDF> " \
+		--header="TAB=mehrere, ENTER=nach PDF wandeln (Ziel: $DEST)")
+	[ -z "$sel" ] && { echo "Abgebrochen."; exit 0; }
+	printf '%s\n' "$sel" | while IFS= read -r f; do resolve_and_convert "$f"; done
+	echo "Fertig. Ziel: $DEST"
+	;;
+-h|--help|help)
+	sed -n '2,16p' "$0" | sed 's/^# \{0,1\}//'
+	;;
+*)
+	for f in "$@"; do resolve_and_convert "$f"; done
+	echo "Fertig. Ziel: $DEST"
+	;;
+esac

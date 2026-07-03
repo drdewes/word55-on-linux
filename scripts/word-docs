@@ -1,0 +1,96 @@
+#!/bin/sh
+# word-docs — Dokumente zwischen dem Word-5.5-Image und Linux/Dropbox schaufeln.
+# Das FAT16-HDD-Image von Word liegt partitioniert vor; die Doku-Partition
+# beginnt bei Sektor 63 -> mtools-Offset @@63S. Word speichert nach C:\DOKUMENT.
+#
+#   word-docs                 interaktiv (fzf): Datei(en) waehlen -> nach Linux exportieren
+#   word-docs list            Inhalt von C:\DOKUMENT im Image anzeigen
+#   word-docs export DATEI    eine Datei aus dem Image nach $DEST holen
+#   word-docs export all      alle Dokumente aus dem Image nach $DEST holen
+#   word-docs import DATEI...  Linux-Datei(en) nach C:\DOKUMENT ins Image legen
+#
+# Ziel-/Quellordner (in der Dropbox -> wird synchronisiert):
+DEST="${WORD_DOCS_DIR:-$HOME/Dokumente/word55}"
+IMG="$HOME/.local/share/word55/word55hd.img@@63S"
+DDIR="::/DOKUMENT"
+
+if ! command -v mcopy >/dev/null 2>&1; then
+	echo "Fehler: mtools (mcopy) nicht installiert." >&2
+	exit 1
+fi
+if [ ! -f "$HOME/.local/share/word55/word55hd.img" ]; then
+	echo "Fehler: word55hd.img nicht gefunden." >&2
+	exit 1
+fi
+
+list() {
+	mdir -i "$IMG" "$DDIR" 2>/dev/null | tr -d '\r'
+}
+
+# Reine Dateinamen (8.3) im Image auflisten, ohne . / .. / Zusammenfassung.
+names() {
+	mdir -/ -b -i "$IMG" "$DDIR" 2>/dev/null | tr -d '\r' \
+		| sed -e 's#.*/##' | grep -viE '^\.{1,2}$' | grep -vE '^$'
+}
+
+export_one() {
+	f="$1"
+	mkdir -p "$DEST"
+	# -m = Zeitstempel uebernehmen, -n = ohne Rueckfrage ueberschreiben
+	if mcopy -m -n -i "$IMG" "$DDIR/$f" "$DEST/" 2>/dev/null; then
+		echo "  export: $f  ->  $DEST/"
+	else
+		echo "  FEHLER beim Export von $f" >&2
+	fi
+}
+
+case "$1" in
+list)
+	list
+	;;
+export)
+	shift
+	case "$1" in
+	all|"")
+		names | while IFS= read -r f; do export_one "$f"; done
+		;;
+	*)
+		for f in "$@"; do export_one "$f"; done
+		;;
+	esac
+	echo "Fertig. Ziel: $DEST"
+	;;
+import)
+	shift
+	if [ $# -eq 0 ]; then echo "Nutzung: word-docs import DATEI..." >&2; exit 1; fi
+	for src in "$@"; do
+		if [ ! -f "$src" ]; then echo "  nicht gefunden: $src" >&2; continue; fi
+		# -o = ohne Rueckfrage ueberschreiben; DOS 8.3 beachten (Name kuerzen falls noetig)
+		if mcopy -o -i "$IMG" "$src" "$DDIR/" 2>/dev/null; then
+			echo "  import: $src  ->  C:\\DOKUMENT"
+		else
+			echo "  FEHLER beim Import von $src (evtl. Name nicht 8.3-tauglich)" >&2
+		fi
+	done
+	;;
+""|pick)
+	# interaktiv: fzf-Auswahl -> Export
+	if ! command -v fzf >/dev/null 2>&1; then
+		echo "fzf nicht installiert. Nutze: word-docs export <datei|all>" >&2
+		list
+		exit 0
+	fi
+	sel=$(names | fzf --multi --prompt="Word-Doku exportieren> " \
+		--header="TAB=mehrere waehlen, ENTER=exportieren nach $DEST")
+	[ -z "$sel" ] && { echo "Abgebrochen."; exit 0; }
+	printf '%s\n' "$sel" | while IFS= read -r f; do export_one "$f"; done
+	echo "Fertig. Ziel: $DEST"
+	;;
+-h|--help|help)
+	sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//'
+	;;
+*)
+	echo "Unbekannt: $1  (word-docs --help)" >&2
+	exit 1
+	;;
+esac
