@@ -9,8 +9,9 @@ Umlauten, und so eingerichtet, dass es sauber speichert. Auf modernem Linux.*
 > but it works exactly the same in English. A full **English section — including
 > how to switch the keyboard to US/English — is at the [bottom](#english). 👇
 
-> 📝 **Lieber WordStar?** Dasselbe für das legendäre **WordStar 7.0 für DOS**
-> gibt es als eigenes Projekt: **[wordstar-on-linux](https://github.com/drdewes/wordstar-on-linux)**.
+> 📝 **Lieber WordStar oder WordPerfect?** Dasselbe gibt es als eigene Projekte:
+> **[wordstar-on-linux](https://github.com/drdewes/wordstar-on-linux)** (WordStar 7.0)
+> und **[wordperfect-on-linux](https://github.com/drdewes/wordperfect-on-linux)** (WordPerfect 5.1).
 
 ---
 
@@ -138,12 +139,13 @@ Einrichtung selbst gebraucht (nur zum vorherigen Installieren der Programme).
 
 ---
 
-## Verwandtes Projekt: WordStar 7
+## Verwandte Projekte
 
-Lieber mit dem legendären **WordStar 7.0 für DOS** schreiben? Dieselbe Behandlung
-— eigene Festplatte gegen „Datenträger voll", deutsche Tastatur, scharfe Schrift,
-Drucken als PDF — gibt es als **eigenes Projekt**:
-**[wordstar-on-linux](https://github.com/drdewes/wordstar-on-linux)**.
+Dieselbe Behandlung — eigene Festplatte gegen „Datenträger voll", deutsche
+Tastatur, scharfe Schrift — gibt es auch für zwei weitere DOS-Klassiker:
+
+- **[wordstar-on-linux](https://github.com/drdewes/wordstar-on-linux)** — WordStar 7.0
+- **[wordperfect-on-linux](https://github.com/drdewes/wordperfect-on-linux)** — WordPerfect 5.1
 
 ---
 
@@ -219,9 +221,10 @@ and are exported to `~/Dokumente/word55`. These names work regardless of your
 system language; rename them in the config and in `scripts/word-docs` if you'd
 prefer English ones.
 
-**Related project: WordStar 7.0.** Prefer the legendary **WordStar 7.0 for DOS**?
-The same treatment lives in its own project:
-[wordstar-on-linux](https://github.com/drdewes/wordstar-on-linux).
+**Related projects.** The same treatment for two more DOS classics:
+[wordstar-on-linux](https://github.com/drdewes/wordstar-on-linux) (WordStar 7.0)
+and [wordperfect-on-linux](https://github.com/drdewes/wordperfect-on-linux)
+(WordPerfect 5.1).
 
 **License:** MIT for the config, scripts and docs. **Microsoft Word 5.5 is not
 included** and belongs to Microsoft.
