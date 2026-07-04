@@ -9,9 +9,8 @@ Umlauten, und so eingerichtet, dass es sauber speichert. Auf modernem Linux.*
 > but it works exactly the same in English. A full **English section — including
 > how to switch the keyboard to US/English — is at the [bottom](#english). 👇
 
-> 📝 **Auch WordStar 7.0 ist jetzt dabei!** Wenn du lieber mit dem legendären
-> WordStar für DOS schreibst, findest du eine eigene, genauso ausführliche
-> Anleitung im Ordner **[`wordstar/`](wordstar/README.md)**.
+> 📝 **Lieber WordStar?** Dasselbe für das legendäre **WordStar 7.0 für DOS**
+> gibt es als eigenes Projekt: **[wordstar-on-linux](https://github.com/drdewes/wordstar-on-linux)**.
 
 ---
 
@@ -139,21 +138,12 @@ Einrichtung selbst gebraucht (nur zum vorherigen Installieren der Programme).
 
 ---
 
-## Und WordStar 7?
+## Verwandtes Projekt: WordStar 7
 
-Dieses Repo ist nicht nur Word 5.5. Im Ordner **[`wordstar/`](wordstar/README.md)**
-liegt dieselbe Behandlung für das legendäre **WordStar 7.0 für DOS**: eigene
-600-MB-Festplatte gegen „Datenträger voll", deutsche Tastatur, scharfe Schrift —
-und sogar **Drucken als PDF**. Kurz:
-
-```sh
-cd word55-on-linux/wordstar
-./install.sh        # fragt nach deinem WS-Ordner (aus Sawyers Gratis-Archiv)
-wordstar
-```
-
-Die vollständige Anleitung steht in **[`wordstar/README.md`](wordstar/README.md)**
-(deutsch, mit englischem Abschnitt).
+Lieber mit dem legendären **WordStar 7.0 für DOS** schreiben? Dieselbe Behandlung
+— eigene Festplatte gegen „Datenträger voll", deutsche Tastatur, scharfe Schrift,
+Drucken als PDF — gibt es als **eigenes Projekt**:
+**[wordstar-on-linux](https://github.com/drdewes/wordstar-on-linux)**.
 
 ---
 
@@ -229,11 +219,9 @@ and are exported to `~/Dokumente/word55`. These names work regardless of your
 system language; rename them in the config and in `scripts/word-docs` if you'd
 prefer English ones.
 
-**Also: WordStar 7.0.** This repo isn't only Word 5.5. The **[`wordstar/`](wordstar/README.md)**
-folder gives the legendary **WordStar 7.0 for DOS** the same treatment — its own
-600 MB disk image (so saving works), a crisp TTF font, and even **printing to
-PDF**. It's free via Robert J. Sawyer's Complete WordStar 7.0 Archive. See
-[`wordstar/README.md`](wordstar/README.md) (German, with an English section).
+**Related project: WordStar 7.0.** Prefer the legendary **WordStar 7.0 for DOS**?
+The same treatment lives in its own project:
+[wordstar-on-linux](https://github.com/drdewes/wordstar-on-linux).
 
 **License:** MIT for the config, scripts and docs. **Microsoft Word 5.5 is not
 included** and belongs to Microsoft.

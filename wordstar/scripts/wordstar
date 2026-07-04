@@ -1,3 +1,0 @@
-#!/bin/sh
-# Startet WordStar 7 (DOS) in DOSBox-X mit Sawyers WordStar-Config
-exec dosbox-x -conf "$HOME/.local/share/wordstar/dosbox-x-wordstar.conf" "$@"
