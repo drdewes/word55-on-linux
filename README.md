@@ -5,10 +5,9 @@ Umlauten, und so eingerichtet, dass es sauber speichert. Auf modernem Linux.*
 
 ![Microsoft Word 5.5 läuft unter Linux in DOSBox-X](docs/screenshot.png)
 
-> **English (short):** Run the real **MS Word 5.5 for DOS** on modern Linux via
-> DOSBox-X — sharp TrueType text, working German keyboard, and (the tricky part)
-> **reliable saving**. This repo contains the configuration, three helper scripts
-> and a one-command installer. Word itself is **not** included — see below.
+> **🇬🇧 English speakers:** this project is written **German-first** (I'm German),
+> but it works exactly the same in English. A full **English section — including
+> how to switch the keyboard to US/English — is at the [bottom](#english). 👇
 
 ---
 
@@ -147,3 +146,66 @@ nicht enthalten.
 
 Gebaut mit [Claude Code](https://claude.com/claude-code). Word 5.5 © Microsoft.
 DOSBox-X vom DOSBox-X-Team. Danke an alle, die alte Software am Leben halten. 🖥️
+
+---
+
+## English
+
+This project is **written in German first** — the author (Holger, a happy
+non-programmer) built it for himself, together with
+[Claude Code](https://claude.com/claude-code), and published it under MIT in
+case someone else enjoys it too. Everything works **exactly the same in
+English**; only a few labels and folder names are German. Here's the gist:
+
+**What it does.** Run the real **MS Word 5.5 for DOS** on modern Linux via
+DOSBox-X. DOSBox starts Word fine, but hands DOS your huge modern hard drive;
+the 16-bit Word miscalculates and refuses to save ("disk full"). Fix: Word gets
+its own small **100 MB FAT16 disk image**, small enough that it behaves. The
+installer builds it automatically.
+
+**Requirements:** `dosbox-x`, `mtools`, and `libreoffice` (for PDF export), plus
+your own copy of Word 5.5 for DOS. Microsoft released it as a **free download**
+around Y2K; find it at WinWorld (<https://winworldpc.com/product/word/55>) or the
+Internet Archive. You need the folder containing `WORD.EXE`.
+
+**Install:**
+
+```sh
+git clone https://github.com/drdewes/word55-on-linux.git
+cd word55-on-linux
+./install.sh        # asks for your WORD folder, builds the disk, installs everything
+word                # start it
+```
+
+**Everyday use:**
+
+| Command | What it does |
+|---------|--------------|
+| `word` | start Word 5.5 |
+| `word-docs` | pull your texts out of Word's disk into `~/Dokumente/word55` |
+| `word-docs list` | show what's in Word's `C:\DOKUMENT` |
+| `word-docs import FILE` | put a Linux file onto Word's disk |
+| `word2pdf FILE.RTF` | turn a Word file into a PDF (via LibreOffice) |
+
+Save your texts to the folder **`C:\DOKUMENT`** inside Word; pull them out with
+`word-docs`. For a **PDF**, save in Word as **RTF**, then run
+`word2pdf FILE.RTF`.
+
+**How to switch to an English / US keyboard.** The setup defaults to a German
+keyboard. To change it, edit `~/.local/share/word55/dosbox-x-word55.conf`, find
+the line
+
+```
+keyboardlayout                                   = gr
+```
+
+and change `gr` to your layout — e.g. `us` (US), `uk` (United Kingdom), `fr`,
+`sp`, etc. Restart with `word`.
+
+**A note on German labels.** Your documents live in the DOS folder `C:\DOKUMENT`
+and are exported to `~/Dokumente/word55`. These names work regardless of your
+system language; rename them in the config and in `scripts/word-docs` if you'd
+prefer English ones.
+
+**License:** MIT for the config, scripts and docs. **Microsoft Word 5.5 is not
+included** and belongs to Microsoft.
