@@ -3,9 +3,11 @@
 *.img
 *.IMG
 
-# Word-5.5-Programmdateien, falls jemand sie versehentlich hier ablegt
+# Word-5.5- / WordStar-Programmdateien, falls jemand sie versehentlich ablegt
 WORD/
 word/
+WS/
+ws/
 *.EXE
 *.exe
 *.OVR
@@ -14,6 +16,12 @@ word/
 *.hlp
 *.LEX
 *.lex
+
+# WordStar-Druckertreiber (.PDF sind bei WordStar KEINE Adobe-PDFs, sondern
+# Treiber) + heruntergeladene Archive
+*.PDF
+*.zip
+*.7z
 
 # Schriftarten (bei Bedarf lokal, nicht Teil des Repos)
 fonts/
